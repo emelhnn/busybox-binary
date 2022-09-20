@@ -13,10 +13,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Obtain Busybox source
-        run: wget https://busybox.net/downloads/busybox-${{ github.event.inputs.busybox_version }}.tar.bz2
+        run: |
+          wget https://busybox.net/downloads/busybox-${{ github.event.inputs.busybox_version }}.tar.bz2
+          tar xvf busybox-${{ github.event.inputs.busybox_version }}.tar.bz2
+      - name: Obtain CVE patches
+        run: |
+          cd busybox-${{ github.event.inputs.busybox_version }}
+          wget https://raw.githubusercontent.com/supphakitbvn/busybox-binary/master/patches/0001-libbb-sockaddr2str-ensure-only-printable-characters-.patch
+          wget https://raw.githubusercontent.com/supphakitbvn/busybox-binary/master/patches/0002-nslookup-sanitize-all-printed-strings-with-printable.patch
+          wget https://raw.githubusercontent.com/supphakitbvn/busybox-binary/master/patches/CVE-2022-30065.patch
       - name: Build Busybox
         run: |
-          tar xvf busybox-${{ github.event.inputs.busybox_version }}.tar.bz2 && cd busybox-${{ github.event.inputs.busybox_version }}
+          cd busybox-${{ github.event.inputs.busybox_version }}
+          for patch in *.patch; do
+              patch -p1 < "$patch"
+          done
           make defconfig
           sed -i 's/^#.*CONFIG_STATIC.*/CONFIG_STATIC=y/' .config
           sed -i 's/^.*CONFIG_INSTALL_APPLET_SYMLINKS.*/# CONFIG_INSTALL_APPLET_SYMLINKS is not set/' .config
