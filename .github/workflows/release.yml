@@ -18,5 +18,28 @@ jobs:
         run: |
           tar xvf busybox-${{ github.event.inputs.busybox_version }}.tar.bz2 && cd busybox-${{ github.event.inputs.busybox_version }}
           make defconfig
-          make
+          sed -i 's/^#.*CONFIG_STATIC.*/CONFIG_STATIC=y/' .config
+          sed -i 's/^.*CONFIG_INSTALL_APPLET_SYMLINKS.*/# CONFIG_INSTALL_APPLET_SYMLINKS is not set/' .config
+          sed -i 's/^#.*CONFIG_INSTALL_APPLET_DONT.*/CONFIG_INSTALL_APPLET_DONT=y/' .config
+          make -j$(nproc)
           make install
+          mv _INSTALL/usr/bin/busybox ../
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.busybox_version }}
+          release_name: Release ${{ github.event.inputs.busybox_version }}
+          draft: true
+          prerelease: false
+      - name: Upload Busybox
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: busybox
+          asset_name: busybox
+          asset_content_type: application/octet-stream
