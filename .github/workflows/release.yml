@@ -1,0 +1,22 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      busybox_version:
+        description: 'Busybox version'
+        required: true
+        default: '1.35.0'
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obtain Busybox source
+        run: wget https://busybox.net/downloads/busybox-${{ github.event.inputs.busybox_version }}.tar.bz2
+      - name: Build Busybox
+        run: |
+          tar xvf busybox-${{ github.event.inputs.busybox_version }}.tar.bz2 && cd busybox-${{ github.event.inputs.busybox_version }}
+          make defconfig
+          make
+          make install
