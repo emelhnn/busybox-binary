@@ -23,7 +23,7 @@ jobs:
           sed -i 's/^#.*CONFIG_INSTALL_APPLET_DONT.*/CONFIG_INSTALL_APPLET_DONT=y/' .config
           make -j$(nproc)
           make install
-          mv _INSTALL/usr/bin/busybox ../
+          mv _INSTALL/bin/busybox ../
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
