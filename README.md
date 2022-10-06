@@ -1,4 +1,4 @@
-# Supphakitbvn's busybox binaries
+# emelhnn's busybox binaries
 [Latest release](https://github.com/supphakitbvn/busybox-binary/releases/latest)
 
 Unofficial busybox binaries, built from github workflow.<br>
