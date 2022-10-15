@@ -6,7 +6,7 @@ on:
    - '*'
 
 jobs:
-  build:
+  x86_64-glibc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,21 +16,52 @@ jobs:
           cat ./busybox_version
           GETVER=$(cat ./busybox_version)
           echo "BUSYBOX_VERSION=${GETVER}" >> $GITHUB_ENV
-          bash obtain_busybox $GETVER
+          bash scripts/obtain_busybox $GETVER
       - name: Patch Busybox
         run: |
-          bash patch_busybox
+          bash scripts/patch_busybox
       - name: Build Busybox
         run: |
-          bash build_busybox
+          bash scripts/build_busybox
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ env.BUSYBOX_VERSION }}"
+          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/glibc)"
           owner: ${{ env.OWNER }}
           draft: true
           artifacts: "busybox"
           artifactContentType: "application/octet-stream"
-          body: "Testing"
+          body: "${{ env.BUSYBOX_VERSION }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: false
+  x86_64-musl:
+    runs-on: ubuntu-latest
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install musl-tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+      - name: Obtain Busybox source tarball
+        run: |
+          cat ./busybox_version
+          GETVER=$(cat ./busybox_version)
+          echo "BUSYBOX_VERSION=${GETVER}" >> $GITHUB_ENV
+          bash scripts/obtain_busybox $GETVER
+      - name: Patch Busybox
+        run: |
+          bash scripts/patch_busybox
+      - name: Build Busybox
+        run: |
+          bash scripts/build_busybox_musl
+      - name: Release Busybox binary
+        uses: ncipollo/release-action@v1
+        with:
+          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/musl)"
+          owner: ${{ env.OWNER }}
+          draft: true
+          artifacts: "busybox"
+          artifactContentType: "application/octet-stream"
+          body: "${{ env.BUSYBOX_VERSION }}"
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: false
