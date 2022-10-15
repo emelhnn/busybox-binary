@@ -13,7 +13,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Obtain Busybox source tarball
         run: |
-          bash obtain_busybox ${{ github.event.inputs.busybox_version }}
+          echo "busybox_version=$(cat busybox_version)" >> $GITHUB_ENV
+          bash obtain_busybox "${{ env.busybox_version }}"
       - name: Patch Busybox
         run: |
           bash patch_busybox
@@ -23,7 +24,7 @@ jobs:
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ github.event.inputs.busybox_version }}"
+          name: "Release ${{ env.busybox_version }}"
           draft: true
           artifacts: "busybox"
           artifactContentType: "application/octet-stream"
