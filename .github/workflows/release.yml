@@ -36,7 +36,7 @@ jobs:
           allowUpdates: false
   x86_64-musl:
     runs-on: ubuntu-latest
-      steps:
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install musl-tools
