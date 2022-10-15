@@ -9,8 +9,9 @@ sed -i 's/^.*CONFIG_INSTALL_APPLET_SYMLINKS.*/# CONFIG_INSTALL_APPLET_SYMLINKS i
 sed -i 's/^#.*CONFIG_INSTALL_APPLET_DONT.*/CONFIG_INSTALL_APPLET_DONT=y/' .config
 
 # Musl.
-#sed -i 's/^#.*CONFIG_CROSS_COMPILER_PREFIX.*/CONFIG_CROSS_COMPILER_PREFIX=musl-/' .config
 echo 'CONFIG_CROSS_COMPILER_PREFIX="musl-""' >> .config
+ln -s "$(which ar)" /usr/bin/musl-ar
+ln -s "$(which strip)" /usr/bin/musl-strip
 
 make -j"$(nproc)"
 make install
