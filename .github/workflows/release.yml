@@ -7,6 +7,10 @@ on:
         description: 'Busybox version'
         required: true
         default: '1.35.0'
+      tag_name:
+        description: 'Tag/Release name'
+        required: true
+        default: '1.35.0'
 
 jobs:
   x86_64-glibc:
@@ -17,9 +21,9 @@ jobs:
       - name: Setup environment variable
         run: |
           GET_VER="${{ github.event.inputs.busybox_version }}"
-          GET_RELEASE_DATE="$(date +%H%Y)"
+          GET_TAG_NAME="${{ github.event.inputs.tag_name }}"
           echo "BUSYBOX_VERSION=$GET_VER" >> $GITHUB_ENV
-          echo "RELEASE_DATE=$GET_RELEASE_DATE" >> $GITHUB_ENV
+          echo "TAG_NAME=$GET_TAG_NAME" >> $GITHUB_ENV
       - name: Obtain Busybox source tarball
         run: |
           scripts/obtain_busybox ${{ env.BUSYBOX_VERSION }}
@@ -32,9 +36,9 @@ jobs:
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/multi-libc)"
+          name: "Release ${{ env.TAG_NAME }}"
           owner: ${{ env.OWNER }}
-          tag: "${{ env.RELEASE_DATE }}"
+          tag: "${{ env.TAG_NAME }}"
           commit: "master"
           draft: true
           artifacts: "busybox_glibc.x86_64"
@@ -50,9 +54,9 @@ jobs:
       - name: Setup environment variable
         run: |
           GET_VER="${{ github.event.inputs.busybox_version }}"
-          GET_RELEASE_DATE="$(date +%H%Y)"
+          GET_TAG_NAME="${{ github.event.inputs.tag_name }}"
           echo "BUSYBOX_VERSION=$GET_VER" >> $GITHUB_ENV
-          echo "RELEASE_DATE=$GET_RELEASE_DATE" >> $GITHUB_ENV
+          echo "TAG_NAME=$GET_TAG_NAME" >> $GITHUB_ENV
       - name: Obtain Busybox source tarball
         run: |
           scripts/obtain_busybox ${{ env.BUSYBOX_VERSION }}
@@ -75,9 +79,9 @@ jobs:
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/multi-libc)"
+          name: "Release ${{ env.TAG_NAME }}"
           owner: ${{ env.OWNER }}
-          tag: "${{ env.RELEASE_DATE }}"
+          tag: "${{ env.TAG_NAME }}"
           commit: "master"
           draft: true
           artifacts: "busybox_musl.x86_64"
