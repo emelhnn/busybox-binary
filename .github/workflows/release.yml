@@ -1,4 +1,4 @@
-name: release
+name: release-multi
 
 on:
   workflow_dispatch:
@@ -14,11 +14,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup environment variable
+        run: |
+          GET_VER="${{ github.event.inputs.busybox_version }}"
+          GET_RELEASE_DATE="$(date +%H%Y)"
+          echo "BUSYBOX_VERSION=$GET_VER" >> $GITHUB_ENV
+          echo "RELEASE_DATE=$GET_RELEASE_DATE" >> $GITHUB_ENV
       - name: Obtain Busybox source tarball
         run: |
-          GETVER="${{ github.event.inputs.busybox_version }}"
-          echo "BUSYBOX_VERSION=$GETVER" >> $GITHUB_ENV
-          scripts/obtain_busybox $GETVER
+          scripts/obtain_busybox ${{ env.BUSYBOX_VERSION }}
       - name: Patch Busybox
         run: |
           scripts/patch_busybox
@@ -30,7 +34,7 @@ jobs:
         with:
           name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/multi-libc)"
           owner: ${{ env.OWNER }}
-          tag: "${{ env.BUSYBOX_VERSION }}"
+          tag: "${{ env.RELEASE_DATE }}"
           commit: "master"
           draft: true
           artifacts: "busybox_glibc.x86_64"
@@ -43,11 +47,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup environment variable
+        run: |
+          GET_VER="${{ github.event.inputs.busybox_version }}"
+          GET_RELEASE_DATE="$(date +%H%Y)"
+          echo "BUSYBOX_VERSION=$GET_VER" >> $GITHUB_ENV
+          echo "RELEASE_DATE=$GET_RELEASE_DATE" >> $GITHUB_ENV
       - name: Obtain Busybox source tarball
         run: |
-          GETVER="${{ github.event.inputs.busybox_version }}"
-          echo "BUSYBOX_VERSION=$GETVER" >> $GITHUB_ENV
-          scripts/obtain_busybox $GETVER
+          scripts/obtain_busybox ${{ env.BUSYBOX_VERSION }}
       - name: Patch Busybox
         run: |
           scripts/patch_busybox
@@ -69,7 +77,7 @@ jobs:
         with:
           name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/multi-libc)"
           owner: ${{ env.OWNER }}
-          tag: "${{ env.BUSYBOX_VERSION }}"
+          tag: "${{ env.RELEASE_DATE }}"
           commit: "master"
           draft: true
           artifacts: "busybox_musl.x86_64"
