@@ -1,12 +1,9 @@
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      busybox_version:
-        description: 'Busybox version'
-        required: true
-        default: '1.35.0'
+  push:
+   tags:
+   - '*'
 
 jobs:
   build:
@@ -23,13 +20,13 @@ jobs:
       - name: Build Busybox
         run: |
           bash build_busybox
-      - name: Upload Busybox
+      - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ github.event.inputs.busybox_version }}
-          bodyFile: busybox
-          artifacts: busybox
-          artifactContentType: application/octet-stream
+          name: "Release ${{ github.event.inputs.busybox_version }}"
           draft: true
-          tag: ${{ github.event.inputs.busybox_version }}
+          artifacts: "busybox"
+          artifactContentType: "application/octet-stream"
+          bodyFile: "busybox"
           token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
