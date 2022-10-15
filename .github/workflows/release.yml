@@ -27,9 +27,10 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: "Release ${{ env.BUSYBOX_VERSION }}"
+          owner: ${{ env.OWNER }}
           draft: true
           artifacts: "busybox"
           artifactContentType: "application/octet-stream"
-          bodyFile: "busybox"
+          body: "Testing"
           token: ${{ secrets.GITHUB_TOKEN }}
-          allowUpdates: true
+          allowUpdates: false
