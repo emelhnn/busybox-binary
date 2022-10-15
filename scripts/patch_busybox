@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh -e
 
 cp -v patches/*.patch busybox-src
 (

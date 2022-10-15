@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh -e
 
 cd busybox-src || exit 1
 make defconfig

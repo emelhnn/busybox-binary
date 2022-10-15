@@ -39,10 +39,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install musl-tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y musl-tools
       - name: Obtain Busybox source tarball
         run: |
           cat ./busybox_version
@@ -53,8 +49,18 @@ jobs:
         run: |
           bash scripts/patch_busybox
       - name: Build Busybox
-        run: |
-          bash scripts/build_busybox_musl
+        uses: addnab/docker-run-action@v3
+        with:
+          image: alpine:3.14
+          options: -v ${{ github.workspace }}:/work
+          shell: sh
+          run: |
+            apk update
+            apk upgrade
+            apk add build-base
+            apk add linux-headers
+            cd work
+            scripts/build_busybox
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:

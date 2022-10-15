@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh -e
 echo "Busybox version $1"
 wget https://busybox.net/downloads/busybox-"$1".tar.bz2
 mkdir busybox-src
