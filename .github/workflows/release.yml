@@ -13,7 +13,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Obtain Busybox source tarball
         run: |
-          GETVER=$(cat busybox_version)
+          ls
+          GETVER=$(cat ./busybox_version)
           echo "BUSYBOX_VERSION=${GETVER}" >> $GITHUB_ENV
           bash obtain_busybox ${{ env.BUSYBOX_VERSION }}
       - name: Patch Busybox
