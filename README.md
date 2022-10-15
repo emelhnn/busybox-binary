@@ -8,6 +8,6 @@ non-custom releases based on default configuration, single static binary.
 * Busybox source code download from <https://busybox.net/downloads/>
 * Latest CVE patched
 * Available for Linux x86_64 (coming soon for i686, armv7, arm64)
-* GNU Library C (coming soon for Musl Library C)
+* GNU Library C, Musl Library C
 
 Use at your own risk.
