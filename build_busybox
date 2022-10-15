@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd busybox || exit 1
+cd busybox-src || exit 1
 make defconfig
 
 # Make it static and don't create symlinks.

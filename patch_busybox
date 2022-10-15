@@ -1,8 +1,8 @@
 #!/bin/bash
 
-cp -v patches/*.patch busybox
+cp -v patches/*.patch busybox-src
 (
-    cd busybox || exit 1
+    cd busybox-src || exit 1
     for patches in *.patch; do
         patch -p1 < "$patches"
     done

@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "Busybox version $1"
 wget https://busybox.net/downloads/busybox-"$1".tar.bz2
-mkdir busybox
+mkdir busybox-src
 (
-    cd busybox || exit 1
+    cd busybox-src || exit 1
     tar --strip-components=1 -xf ../busybox-"$1".tar.bz2
 )
