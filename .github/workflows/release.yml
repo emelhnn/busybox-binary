@@ -31,4 +31,5 @@ jobs:
           artifacts: busybox
           artifactContentType: application/octet-stream
           draft: true
+          tag: ${{ github.event.inputs.busybox_version }}
           token: ${{ secrets.GITHUB_TOKEN }}
