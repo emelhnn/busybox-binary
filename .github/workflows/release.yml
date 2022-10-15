@@ -14,7 +14,7 @@ jobs:
       - name: Obtain Busybox source tarball
         run: |
           echo "busybox_version=$(cat busybox_version)" >> $GITHUB_ENV
-          bash obtain_busybox "${{ env.busybox_version }}"
+          bash obtain_busybox "$busybox_version"
       - name: Patch Busybox
         run: |
           bash patch_busybox
@@ -24,7 +24,7 @@ jobs:
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ env.busybox_version }}"
+          name: "Release $busybox_version"
           draft: true
           artifacts: "busybox"
           artifactContentType: "application/octet-stream"
