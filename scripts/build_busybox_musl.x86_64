@@ -10,4 +10,4 @@ sed -i 's/^#.*CONFIG_INSTALL_APPLET_DONT.*/CONFIG_INSTALL_APPLET_DONT=y/' .confi
 
 make -j"$(nproc)"
 make install
-mv _install/bin/busybox ../
+mv _install/bin/busybox ../busybox_musl.x86_64

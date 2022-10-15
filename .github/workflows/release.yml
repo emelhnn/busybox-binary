@@ -1,9 +1,12 @@
 name: release
 
 on:
-  push:
-   tags:
-   - '*'
+  workflow_dispatch:
+    inputs:
+      busybox_version:
+        description: 'Busybox version'
+        required: true
+        default: '1.35.0'
 
 jobs:
   x86_64-glibc:
@@ -13,27 +16,28 @@ jobs:
         uses: actions/checkout@v3
       - name: Obtain Busybox source tarball
         run: |
-          cat ./busybox_version
-          GETVER=$(cat ./busybox_version)
-          echo "BUSYBOX_VERSION=${GETVER}" >> $GITHUB_ENV
-          bash scripts/obtain_busybox $GETVER
+          GETVER="${{ github.event.inputs.busybox_version }}"
+          echo "BUSYBOX_VERSION=$GETVER" >> $GITHUB_ENV
+          scripts/obtain_busybox $GETVER
       - name: Patch Busybox
         run: |
-          bash scripts/patch_busybox
+          scripts/patch_busybox
       - name: Build Busybox
         run: |
-          bash scripts/build_busybox
+          scripts/build_busybox_glibc.x86_64
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/glibc)"
+          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/multi-libc)"
           owner: ${{ env.OWNER }}
+          tag: "${{ env.BUSYBOX_VERSION }}"
+          commit: "master"
           draft: true
-          artifacts: "busybox"
+          artifacts: "busybox_glibc.x86_64"
           artifactContentType: "application/octet-stream"
           body: "${{ env.BUSYBOX_VERSION }}"
           token: ${{ secrets.GITHUB_TOKEN }}
-          allowUpdates: false
+          allowUpdates: true
   x86_64-musl:
     runs-on: ubuntu-latest
     steps:
@@ -41,13 +45,12 @@ jobs:
         uses: actions/checkout@v3
       - name: Obtain Busybox source tarball
         run: |
-          cat ./busybox_version
-          GETVER=$(cat ./busybox_version)
-          echo "BUSYBOX_VERSION=${GETVER}" >> $GITHUB_ENV
-          bash scripts/obtain_busybox $GETVER
+          GETVER="${{ github.event.inputs.busybox_version }}"
+          echo "BUSYBOX_VERSION=$GETVER" >> $GITHUB_ENV
+          scripts/obtain_busybox $GETVER
       - name: Patch Busybox
         run: |
-          bash scripts/patch_busybox
+          scripts/patch_busybox
       - name: Build Busybox
         uses: addnab/docker-run-action@v3
         with:
@@ -60,15 +63,17 @@ jobs:
             apk add build-base
             apk add linux-headers
             cd work
-            scripts/build_busybox
+            scripts/build_busybox_musl.x86_64
       - name: Release Busybox binary
         uses: ncipollo/release-action@v1
         with:
-          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/musl)"
+          name: "Release ${{ env.BUSYBOX_VERSION }} (x86_64/multi-libc)"
           owner: ${{ env.OWNER }}
+          tag: "${{ env.BUSYBOX_VERSION }}"
+          commit: "master"
           draft: true
-          artifacts: "busybox"
+          artifacts: "busybox_musl.x86_64"
           artifactContentType: "application/octet-stream"
           body: "${{ env.BUSYBOX_VERSION }}"
           token: ${{ secrets.GITHUB_TOKEN }}
-          allowUpdates: false
+          allowUpdates: true
